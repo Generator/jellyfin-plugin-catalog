@@ -1,0 +1,66 @@
+name: '🔄 Aggregate Plugin Catalog'
+
+on:
+  repository_dispatch:
+    types: [plugin-released]
+  workflow_dispatch:
+  schedule:
+    - cron: '17 4 * * *'   # daily self-heal
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/aggregate.yml'
+      - '.github/scripts/aggregate.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aggregate
+  cancel-in-progress: false
+
+jobs:
+  aggregate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Merge plugin manifests
+        env:
+          SOURCE_MANIFESTS: |
+            https://generator.github.io/jellyfin-plugin-trailer2strm/manifest.json
+            https://generator.github.io/jellyfin-plugin-multify/manifest.json
+            https://generator.github.io/jellyfin-plugin-extractsubs/manifest.json
+            https://generator.github.io/jellyfin-plugin-wyzie/manifest.json
+        run: python3 .github/scripts/aggregate.py
+
+      - name: Commit aggregated manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add manifest.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: aggregate plugin manifests"
+          git push
+
+      - name: Sync gh-pages branch
+        if: success()
+        run: |
+          # Keep gh-pages in sync with main for GitHub Pages (if Pages is set to gh-pages)
+          git fetch origin gh-pages 2>/dev/null || true
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+            git push origin main:gh-pages --force
+            echo "Synced gh-pages branch with main."
+          else
+            echo "No remote gh-pages branch yet — skipping sync (Pages can serve from main)."
+          fi

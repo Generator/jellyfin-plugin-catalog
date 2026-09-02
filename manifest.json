@@ -1,0 +1,92 @@
+[
+  {
+    "category": "Metadata",
+    "description": "A Jellyfin plugin that creates .strm files pointing to official IMDb trailers for movies, TV shows.",
+    "guid": "cda86c4a-cc3b-411a-8244-df7d8186166d",
+    "name": "Trailer2Strm",
+    "overview": "Generates .strm files with IMDb trailer URLs for movies, TV shows.",
+    "owner": "Generator",
+    "versions": [
+      {
+        "changelog": "Trailer2Strm v1.0.0\n\n- Automatic IMDb trailer .strm generation for movies and series\n- Event-driven (library add/update) + scheduled daily scan\n- Rate-limit handling: IMDb 429 retry with exponential backoff; concurrency limiter (SemaphoreSlim) on library events\n- Expiry-based trailer URL refresh (RefreshTrailerBeforeExpiryHours, default 48h) with config UI",
+        "checksum": "c473712235f2ec40baec181a4184ba11",
+        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-trailer2strm/releases/download/v1.0.0/Jellyfin.Plugin.Trailer2Strm.zip",
+        "targetAbi": "12.0.0.0",
+        "timestamp": "2026-08-26T17:17:27Z",
+        "version": "1.0.0"
+      }
+    ]
+  },
+  {
+    "category": "Notifications",
+    "description": "A unified notification plugin for Jellyfin that sends notifications to multiple systems.",
+    "guid": "8e7a42b2-6a49-40e5-a05d-780ba1942cd1",
+    "imageUrl": "https://raw.githubusercontent.com/Generator/jellyfin-plugin-multify/main/assets/logo.png",
+    "name": "Multify",
+    "overview": "Sends notifications to Telegram, Gotify, ntfy, and generic webhooks with configurable event filtering, user filtering, library filtering, and customizable templates.",
+    "owner": "Generator",
+    "versions": [
+      {
+        "changelog": "- Telegram edit-on-duplicate: when the same item (matched by TmdbId) is notified again, the existing Telegram message is edited instead of sending a new one.\n- Ignore Trailer items from all notification types.\n\n- Defer ItemAdded/ItemUpdated notifications via an internal queue until remote metadata is available, so messages are no longer sent before Jellyfin populates details.\n\n- Readiness check now requires a real content field (Overview, Genres, OfficialRating, or CommunityRating) in addition to a provider ID, preventing \"(Unknown)\"/\"N/A\" placeholders in sent messages.\n- Map MDBList \"tomatoes\" source to RottenTomatoesRating so Rotten Tomatoes ratings populate correctly.\n\n- Removed manifest.json from the main branch.\n\n- Revised README for installation and message customization.",
+        "checksum": "2dc0075f985e13c03f1250c90c631dc7",
+        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-multify/releases/download/v0.0.7/Jellyfin.Plugin.Multify.zip",
+        "targetAbi": "12.0.0.0",
+        "timestamp": "2026-08-25T19:16:34Z",
+        "version": "0.0.7.0"
+      },
+      {
+        "changelog": "- `SubtitleDownloadFailureNotifier` \u2014 new Subtitle Download Failure notification type\n- Playback data template variables (play method, position, volume, playback bitrate) via shared `PlaybackBitrateService`\n- Stream info and metadata variables (VideoCodec, AudioCodec, VideoResolution, VideoRange, Framerate, AudioChannels, SubtitleLanguages, Width/Height, PlayCount, IsFavorite, Played)\n- People variables (Director, Writers, CastList, CastJson)\n- Parent poster URLs: SeasonPoster, SeriesPoster, TmdbSeasonPosterUrl, TmdbSeriesPosterUrl\n- TMDB image URL enrichment via `IProviderManager` (replaces custom TmdbService), including test-notification flow\n- `PhotoUrlTemplate` options for Gotify and ntfy destinations\n- Select All / Select None buttons on Item Type checkboxes\n- Real library items used for test notifications with realistic fallback\n- `UserDataService` for per-user PlayCount/IsFavorite/Played/UserRating\n- Version bump to 0.0.6\n\n- MDBList authentication: `?apikey=` query param instead of Bearer header; null score handling\n- `FormatResolution` bug for non-16:9 aspect ratios\n- MarkdownV2 escaping: URLs skipped from escaping, un-escaped after template substitution, escaped values preserve formatting markers\n- Telegram: return API error description instead of generic 400; message editing only for ItemAdded/ItemUpdated\n- `UserFilter`/`LibraryFilter` changed from `Guid[]` to `string[]` to fix JSON deserialization\n- Generic webhook header/field pairing and malformed Content-Type handling\n- ntfy URL join double-slash, priority clamp (1-5), header hardening (RFC 2047 encoding)\n- `LibraryCache` sync dispose, timer leak, culture-aware `ToString` for JSON (invariant)\n- Release workflow: manifest branch history preserved; changelog now extracted from the annotated tag message into both the Jellyfin manifest and GitHub release body\n- `scripts/package.py`: numeric semver sort, prerelease sort order, Jellyfin 12.0 default target\n- Numerous StyleCop/build errors and dead code removal across notifiers and services\n\n- Target framework `net9.0` \u2192 `net10.0` for Jellyfin 12 compatibility\n- Jellyfin NuGet packages to `12.*-*` with `targetAbi` 12.0.0.0\n- Config UI to tabbed layout with section-based destination cards\n- Jellyfin ImageUrl template variables renamed (dropped 'Url' suffix)\n- Removed TVDB URLs, `OriginalLanguage`, and `HomePageUrl` template variables\n\n- Unused workflow files (build.yaml, publish.yaml, publish-unstable.yaml)",
+        "checksum": "8a6147dbf16d2bd219a1fd7b1c4aeb23",
+        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-multify/releases/download/v0.0.6/Jellyfin.Plugin.Multify.zip",
+        "targetAbi": "12.0.0.0",
+        "timestamp": "2026-08-07T14:35:28Z",
+        "version": "0.0.6.0"
+      }
+    ]
+  },
+  {
+    "category": "Subtitles",
+    "description": "Extracts embedded subtitles.\n",
+    "guid": "77BE2143-68BE-4E77-AFC8-82859969038A",
+    "imageUrl": "https://repo.jellyfin.org/releases/plugin/images/jellyfin-plugin-extractsubs.png",
+    "name": "Better Subtitle Extractor",
+    "overview": "Extracts Subtitles.",
+    "owner": "jellyfin",
+    "versions": [
+      {
+        "changelog": "Release v1.0.0.0\n\n- Initial release of Better Subtitle Extractor\n- Extract embedded subtitles and attachments during library scan or via scheduled task\n- Advanced filtering: languages, codecs, SDH/forced, regex and C# override expressions\n- Optional SRT conversion and parallel worker threads",
+        "checksum": "c95af777c6b6a97de11ab5e5c00bc8ae",
+        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-extractsubs/releases/download/v1.0.0.0/Jellyfin.Plugin.SubtitleExtract.zip",
+        "targetAbi": "12.0.0.0",
+        "timestamp": "2026-08-17T13:20:42Z",
+        "version": "1.0.0.0"
+      },
+      {
+        "changelog": "Release v1.1.0.0\n\n- Reliable extraction trigger: new hosted service subscribes to library ItemAdded/ItemUpdated events\n- Fix ffmpeg extraction failure by always passing an explicit -f format for the source codec\n- Graceful shutdown using a service-lifetime CancellationTokenSource",
+        "checksum": "9e0e6429a39b8ba17081cdb169aa3022",
+        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-extractsubs/releases/download/v1.1.0.0/Jellyfin.Plugin.SubtitleExtract.zip",
+        "targetAbi": "12.0.0.0",
+        "timestamp": "2026-08-25T19:24:56Z",
+        "version": "1.1.0.0"
+      }
+    ]
+  },
+  {
+    "category": "Subtitles",
+    "description": "On-demand subtitle provider backed by sub.wyzie.io.",
+    "guid": "b2c9f7a0-2d4e-4b8f-9a1c-7e3d4c5a6b70",
+    "name": "Wyzie Subtitles",
+    "overview": "Streams subtitle content directly from Wyzie when playback starts. Requires a free API key from https://sub.wyzie.io/redeem.",
+    "owner": "wyzie",
+    "versions": [
+      {
+        "changelog": "Release 1.0.5\n\n- Migrate plugin catalog to gh-pages via jellyfin-plugin-repo-action\n- Build for Jellyfin 12.0 only (drop Emby and Jellyfin 10.11 targets)\n- Move packaging script to scripts/package.py and add test.yaml CI workflow\n- Adopt extractsubs workflow model (release/test/codeql) on main branch",
+        "checksum": "d3265ca110aa071d99fb437abbe79efb",
+        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-wyzie/releases/download/v1.0.5/Jellyfin.Plugin.Wyzie.zip",
+        "targetAbi": "12.0.0.0",
+        "timestamp": "2026-08-28T17:45:08Z",
+        "version": "1.0.5"
+      }
+    ]
+  }
+]
