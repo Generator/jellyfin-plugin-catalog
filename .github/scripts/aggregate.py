@@ -16,6 +16,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import pathlib
@@ -80,6 +81,22 @@ def _extract_url_tag(source_url: str) -> str | None:
     return m.group(1) if m else None
 
 
+def _fetch_remote_md5(url: str) -> str | None:
+    """Download URL and compute MD5; returns None on failure (best-effort)."""
+    try:
+        with urllib.request.urlopen(url, timeout=TIMEOUT) as resp:
+            h = hashlib.md5()
+            while True:
+                chunk = resp.read(8192)
+                if not chunk:
+                    break
+                h.update(chunk)
+            return h.hexdigest().lower()
+    except Exception as exc:
+        print(f"  warn: could not fetch checksum for {url}: {exc}", file=sys.stderr)
+        return None
+
+
 def _sanitize_versions(versions: list[dict]) -> list[dict]:
     """Deduplicate, correct mismatches, drop legacy single-digit, sort descending (pure, immutable)."""
     if not versions:
@@ -115,6 +132,23 @@ def _sanitize_versions(versions: list[dict]) -> list[dict]:
                 )
                 entry["version"] = patched
         corrected.append(entry)
+
+    # 2b) Verify checksum against actual artifact (best-effort); patch if mismatch
+    for entry in corrected:
+        url = str(entry.get("sourceUrl", ""))
+        expected = str(entry.get("checksum", "")).lower()
+        if not url or not expected:
+            continue
+        # Only fetch when checksum looks like MD5 (32 hex) to avoid extra IO
+        if not re.fullmatch(r"[a-f0-9]{32}", expected):
+            continue
+        remote_md5 = _fetch_remote_md5(url)
+        if remote_md5 and remote_md5 != expected:
+            print(
+                f"  sanitize: checksum mismatch for {entry.get('version')} {url} expected {expected} got {remote_md5} -> patching",
+                file=sys.stderr,
+            )
+            entry["checksum"] = remote_md5
 
     # 3) Deduplicate by version string keep newest timestamp
     by_version: dict[str, dict] = {}
