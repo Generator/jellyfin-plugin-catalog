@@ -27,12 +27,20 @@
     "owner": "Generator",
     "versions": [
       {
+        "changelog": "- MDBList now queried only when a matched destination template actually references an MDBList variable (MdblistScore/ImdbRating/etc.) or SendAllProperties is set \u2014 prevents 1Hz PlaybackProgress hot-loop burning daily quota (4012 calls, 3016\u00d7 429 in log_20260908)\n- Library Filter `OnlySelected` blocking: normalize GUIDs (N vs D, case-insensitive) for LibraryId/UserId and resolve CollectionFolder vs physical Folder alias via VirtualFolders path prefix (AF92 Filmes vs F7E7 movies)\n- Test notification fallback now respects LibraryFilter \u2014 sets LibraryId/LibraryName/Path to the filter's VirtualFolder instead of `N/A`, so \"Test\" with a filter is actually sent\n- ItemDeleted never sent: HandleItemRemoved now uses `e.Item` directly (upstream webhook `ItemDeletedHandler` pattern) and skips virtual items \u2014 `GetItemById` after removal always returned null\n\n- MultifySender reuses matched destination lists for MDBList guard and send phase to avoid double LINQ enumeration\n- FilterService now optionally injects ILibraryManager for path-based library resolution",
+        "checksum": "8e3f6e11886e0588aabb6770818e0f0c",
+        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-multify/releases/download/v0.0.8/Jellyfin.Plugin.Multify.zip",
+        "targetAbi": "12.0.0.0",
+        "timestamp": "2026-09-09T14:29:12Z",
+        "version": "0.0.8.0"
+      },
+      {
         "changelog": "- Telegram edit-on-duplicate: when the same item (matched by TmdbId) is notified again, the existing Telegram message is edited instead of sending a new one.\n- Ignore Trailer items from all notification types.\n\n- Defer ItemAdded/ItemUpdated notifications via an internal queue until remote metadata is available, so messages are no longer sent before Jellyfin populates details.\n\n- Readiness check now requires a real content field (Overview, Genres, OfficialRating, or CommunityRating) in addition to a provider ID, preventing \"(Unknown)\"/\"N/A\" placeholders in sent messages.\n- Map MDBList \"tomatoes\" source to RottenTomatoesRating so Rotten Tomatoes ratings populate correctly.\n\n- Removed manifest.json from the main branch.\n\n- Revised README for installation and message customization.",
         "checksum": "2dc0075f985e13c03f1250c90c631dc7",
         "sourceUrl": "https://github.com/Generator/jellyfin-plugin-multify/releases/download/v0.0.7/Jellyfin.Plugin.Multify.zip",
         "targetAbi": "12.0.0.0",
         "timestamp": "2026-08-25T19:16:34Z",
-        "version": "0.0.7.0"
+        "version": "0.0.6.0"
       },
       {
         "changelog": "- `SubtitleDownloadFailureNotifier` \u2014 new Subtitle Download Failure notification type\n- Playback data template variables (play method, position, volume, playback bitrate) via shared `PlaybackBitrateService`\n- Stream info and metadata variables (VideoCodec, AudioCodec, VideoResolution, VideoRange, Framerate, AudioChannels, SubtitleLanguages, Width/Height, PlayCount, IsFavorite, Played)\n- People variables (Director, Writers, CastList, CastJson)\n- Parent poster URLs: SeasonPoster, SeriesPoster, TmdbSeasonPosterUrl, TmdbSeriesPosterUrl\n- TMDB image URL enrichment via `IProviderManager` (replaces custom TmdbService), including test-notification flow\n- `PhotoUrlTemplate` options for Gotify and ntfy destinations\n- Select All / Select None buttons on Item Type checkboxes\n- Real library items used for test notifications with realistic fallback\n- `UserDataService` for per-user PlayCount/IsFavorite/Played/UserRating\n- Version bump to 0.0.6\n\n- MDBList authentication: `?apikey=` query param instead of Bearer header; null score handling\n- `FormatResolution` bug for non-16:9 aspect ratios\n- MarkdownV2 escaping: URLs skipped from escaping, un-escaped after template substitution, escaped values preserve formatting markers\n- Telegram: return API error description instead of generic 400; message editing only for ItemAdded/ItemUpdated\n- `UserFilter`/`LibraryFilter` changed from `Guid[]` to `string[]` to fix JSON deserialization\n- Generic webhook header/field pairing and malformed Content-Type handling\n- ntfy URL join double-slash, priority clamp (1-5), header hardening (RFC 2047 encoding)\n- `LibraryCache` sync dispose, timer leak, culture-aware `ToString` for JSON (invariant)\n- Release workflow: manifest branch history preserved; changelog now extracted from the annotated tag message into both the Jellyfin manifest and GitHub release body\n- `scripts/package.py`: numeric semver sort, prerelease sort order, Jellyfin 12.0 default target\n- Numerous StyleCop/build errors and dead code removal across notifiers and services\n\n- Target framework `net9.0` \u2192 `net10.0` for Jellyfin 12 compatibility\n- Jellyfin NuGet packages to `12.*-*` with `targetAbi` 12.0.0.0\n- Config UI to tabbed layout with section-based destination cards\n- Jellyfin ImageUrl template variables renamed (dropped 'Url' suffix)\n- Removed TVDB URLs, `OriginalLanguage`, and `HomePageUrl` template variables\n\n- Unused workflow files (build.yaml, publish.yaml, publish-unstable.yaml)",
@@ -54,20 +62,28 @@
     "owner": "jellyfin",
     "versions": [
       {
+        "version": "7",
         "changelog": "Release v1.0.0.0\n\n- Initial release of Better Subtitle Extractor\n- Extract embedded subtitles and attachments during library scan or via scheduled task\n- Advanced filtering: languages, codecs, SDH/forced, regex and C# override expressions\n- Optional SRT conversion and parallel worker threads",
-        "checksum": "c95af777c6b6a97de11ab5e5c00bc8ae",
-        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-extractsubs/releases/download/v1.0.0.0/Jellyfin.Plugin.SubtitleExtract.zip",
         "targetAbi": "12.0.0.0",
-        "timestamp": "2026-08-17T13:20:42Z",
-        "version": "1.0.0.0"
+        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-extractsubs/releases/download/v1.0.0.0/Jellyfin.Plugin.SubtitleExtract.zip",
+        "checksum": "c95af777c6b6a97de11ab5e5c00bc8ae",
+        "timestamp": "2026-08-17T13:20:42Z"
       },
       {
-        "changelog": "Release v1.1.0.0\n\n- Reliable extraction trigger: new hosted service subscribes to library ItemAdded/ItemUpdated events\n- Fix ffmpeg extraction failure by always passing an explicit -f format for the source codec\n- Graceful shutdown using a service-lifetime CancellationTokenSource",
-        "checksum": "9e0e6429a39b8ba17081cdb169aa3022",
-        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-extractsubs/releases/download/v1.1.0.0/Jellyfin.Plugin.SubtitleExtract.zip",
+        "version": "1.1.1.0",
+        "changelog": "Better Subtitle Extractor v1.1.1.0\n\nChanges since v1.1.0.0:\n- Subtitles-only: remove attachment extraction stack\n  (SelectedAttachmentsLibraries, ExtractAttachmentsTask,\n  AttachmentExtractionProvider) \u2013 single library filter\n  SelectedSubtitlesLibraries\n- Fix Jellyfin 12 file: prefix regression: MediaEncoder now prepends\n  file: which makes ffprobe return null streams. ProbeAsync now\n  tries MediaEncoder, falls back to direct ffprobe JSON parsing\n  without file: prefix (derived from EncoderPath), then to item\n  cached MediaStreams\n- Restore SubtitleExtractItemAddedEntryPoint hosted service for\n  reliable ItemAdded/ItemUpdated trigger and re-register via\n  SubtitleExtractServiceRegistrator\n- Normalize ffmpeg muxer mapping: explicit -f for copyable codecs,\n  pgssub/dvbsub/dvdsub -> matroska, unknown codec_type -> Data,\n  unsupported copy codec now throws instead of silent srt fallback\n- Ensure ffprobe stdout/stderr are observed even on timeout\n- Bump Directory.Build.props to 1.1.1.0, update meta.json\n\nVerified: Extract Subtitles task Completed (12:35) on\nlinuxserver/jellyfin:latest (Jellyfin 12.0.0, file: regression\npresent); Peaky Blinders mkv extracted 3 srt files (eng x2, por)\nnext to media. Build 0 warnings.",
         "targetAbi": "12.0.0.0",
-        "timestamp": "2026-08-25T19:24:56Z",
-        "version": "1.1.0.0"
+        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-extractsubs/releases/download/v1.1.1.0/Jellyfin.Plugin.SubtitleExtract.zip",
+        "checksum": "e5ccdf632daaf26f168717b59151ca8c",
+        "timestamp": "2026-09-09T13:05:11Z"
+      },
+      {
+        "version": "1.1.0.0",
+        "changelog": "Better Subtitle Extractor v1.1.0.0\n\nChanges since v1.0.0.0:\n- Reliable extraction trigger: a new hosted service subscribes to library\n  ItemAdded/ItemUpdated events, so subtitles are extracted whenever an item is\n  added or refreshed (previously only ran during metadata refresh and could be\n  skipped for unchanged items).\n- Fixed ffmpeg extraction failure: always pass an explicit -f format matching\n  the source codec. The atomic temp output uses a \".tmp\" extension, which\n  previously prevented ffmpeg from choosing a muxer and caused extraction to\n  fail for copyable text subtitle codecs (subrip/ass/webvtt).\n- Graceful shutdown: use a service-lifetime CancellationTokenSource cancelled on\n  shutdown instead of CancellationToken.None, so in-flight ffmpeg work observes\n  cancellation.\n\nVerified: refreshing the Filmes library extracts eng + por subtitles for the\ntest mkv (2 .srt files produced).",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-extractsubs/releases/download/v1.1.0.0/Jellyfin.Plugin.SubtitleExtract.zip",
+        "checksum": "9e0e6429a39b8ba17081cdb169aa3022",
+        "timestamp": "2026-08-25T19:27:29Z"
       }
     ]
   },
