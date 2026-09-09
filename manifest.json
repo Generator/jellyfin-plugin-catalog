@@ -41,14 +41,6 @@
         "targetAbi": "12.0.0.0",
         "timestamp": "2026-08-25T19:16:34Z",
         "version": "0.0.6.0"
-      },
-      {
-        "changelog": "- `SubtitleDownloadFailureNotifier` \u2014 new Subtitle Download Failure notification type\n- Playback data template variables (play method, position, volume, playback bitrate) via shared `PlaybackBitrateService`\n- Stream info and metadata variables (VideoCodec, AudioCodec, VideoResolution, VideoRange, Framerate, AudioChannels, SubtitleLanguages, Width/Height, PlayCount, IsFavorite, Played)\n- People variables (Director, Writers, CastList, CastJson)\n- Parent poster URLs: SeasonPoster, SeriesPoster, TmdbSeasonPosterUrl, TmdbSeriesPosterUrl\n- TMDB image URL enrichment via `IProviderManager` (replaces custom TmdbService), including test-notification flow\n- `PhotoUrlTemplate` options for Gotify and ntfy destinations\n- Select All / Select None buttons on Item Type checkboxes\n- Real library items used for test notifications with realistic fallback\n- `UserDataService` for per-user PlayCount/IsFavorite/Played/UserRating\n- Version bump to 0.0.6\n\n- MDBList authentication: `?apikey=` query param instead of Bearer header; null score handling\n- `FormatResolution` bug for non-16:9 aspect ratios\n- MarkdownV2 escaping: URLs skipped from escaping, un-escaped after template substitution, escaped values preserve formatting markers\n- Telegram: return API error description instead of generic 400; message editing only for ItemAdded/ItemUpdated\n- `UserFilter`/`LibraryFilter` changed from `Guid[]` to `string[]` to fix JSON deserialization\n- Generic webhook header/field pairing and malformed Content-Type handling\n- ntfy URL join double-slash, priority clamp (1-5), header hardening (RFC 2047 encoding)\n- `LibraryCache` sync dispose, timer leak, culture-aware `ToString` for JSON (invariant)\n- Release workflow: manifest branch history preserved; changelog now extracted from the annotated tag message into both the Jellyfin manifest and GitHub release body\n- `scripts/package.py`: numeric semver sort, prerelease sort order, Jellyfin 12.0 default target\n- Numerous StyleCop/build errors and dead code removal across notifiers and services\n\n- Target framework `net9.0` \u2192 `net10.0` for Jellyfin 12 compatibility\n- Jellyfin NuGet packages to `12.*-*` with `targetAbi` 12.0.0.0\n- Config UI to tabbed layout with section-based destination cards\n- Jellyfin ImageUrl template variables renamed (dropped 'Url' suffix)\n- Removed TVDB URLs, `OriginalLanguage`, and `HomePageUrl` template variables\n\n- Unused workflow files (build.yaml, publish.yaml, publish-unstable.yaml)",
-        "checksum": "8a6147dbf16d2bd219a1fd7b1c4aeb23",
-        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-multify/releases/download/v0.0.6/Jellyfin.Plugin.Multify.zip",
-        "targetAbi": "12.0.0.0",
-        "timestamp": "2026-08-07T14:35:28Z",
-        "version": "0.0.6.0"
       }
     ]
   },
