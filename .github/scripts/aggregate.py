@@ -19,9 +19,11 @@ import argparse
 import json
 import os
 import pathlib
+import re
 import sys
 import urllib.error
 import urllib.request
+from datetime import datetime, timezone
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 DEFAULT_OUT = ROOT / "manifest.json"
@@ -46,6 +48,107 @@ def _parse_sources(raw: str | None) -> list[str]:
         if url:
             parts.append(url)
     return parts
+
+
+def _parse_timestamp(value: str) -> datetime:
+    """Parse ISO8601 timestamp; fallback to epoch on failure (pure)."""
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except Exception:
+        return datetime.fromtimestamp(0, tz=timezone.utc)
+
+
+def _normalize_version(version: str) -> tuple[int, ...]:
+    """Convert version string to comparable tuple; non-numeric parts become 0."""
+    parts: list[int] = []
+    for p in re.split(r"[.\-+]", version or ""):
+        try:
+            parts.append(int(p))
+        except ValueError:
+            parts.append(0)
+    # Pad to 4 components for stable semver compare (e.g. 1.0.0 -> 1.0.0.0)
+    while len(parts) < 4:
+        parts.append(0)
+    return tuple(parts)
+
+
+def _extract_url_tag(source_url: str) -> str | None:
+    """Extract version tag from GitHub release URL like .../download/v1.1.0/..."""
+    if not source_url:
+        return None
+    m = re.search(r"/download/v([^/]+)/", source_url)
+    return m.group(1) if m else None
+
+
+def _sanitize_versions(versions: list[dict]) -> list[dict]:
+    """Deduplicate, correct mismatches, drop legacy single-digit, sort descending (pure, immutable)."""
+    if not versions:
+        return []
+
+    # 1) Drop legacy single-digit versions when richer versions exist (e.g. "7" vs "1.1.1.0")
+    has_dotted = any("." in str(v.get("version", "")) for v in versions)
+    filtered = [
+        dict(v)
+        for v in versions
+        if not (has_dotted and re.fullmatch(r"\d+", str(v.get("version", ""))))
+    ]
+    dropped_legacy = len(versions) - len(filtered)
+    if dropped_legacy:
+        print(f"  sanitize: dropped {dropped_legacy} legacy single-digit version(s)", file=sys.stderr)
+
+    # 2) Correct version/url tag mismatch (e.g. version 0.0.6.0 but URL /v0.0.7/)
+    corrected: list[dict] = []
+    for v in filtered:
+        entry = dict(v)
+        tag = _extract_url_tag(str(entry.get("sourceUrl", "")))
+        ver = str(entry.get("version", ""))
+        if tag and tag != ver:
+            # Normalize comparison: tag "0.0.7" vs version "0.0.7.0" considered equal
+            if _normalize_version(tag) != _normalize_version(ver):
+                # Preserve 4-part convention when original was 4-part (e.g. 0.0.6.0 -> 0.0.7.0)
+                patched = tag
+                if ver.count(".") == 3 and tag.count(".") == 2:
+                    patched = f"{tag}.0"
+                print(
+                    f"  sanitize: version/url mismatch {ver} vs tag v{tag} -> patching to {patched}",
+                    file=sys.stderr,
+                )
+                entry["version"] = patched
+        corrected.append(entry)
+
+    # 3) Deduplicate by version string keep newest timestamp
+    by_version: dict[str, dict] = {}
+    for v in corrected:
+        key = str(v.get("version", ""))
+        existing = by_version.get(key)
+        if existing is None:
+            by_version[key] = v
+        else:
+            if _parse_timestamp(str(v.get("timestamp", ""))) > _parse_timestamp(
+                str(existing.get("timestamp", ""))
+            ):
+                print(f"  sanitize: dedup version {key} -> keeping newest timestamp", file=sys.stderr)
+                by_version[key] = v
+            else:
+                print(f"  sanitize: dedup version {key} -> keeping existing", file=sys.stderr)
+
+    deduped = list(by_version.values())
+
+    # 4) Sort descending by timestamp then semver
+    def sort_key(v: dict) -> tuple[datetime, tuple[int, ...]]:
+        return (_parse_timestamp(str(v.get("timestamp", ""))), _normalize_version(str(v.get("version", ""))))
+
+    deduped.sort(key=sort_key, reverse=True)
+    return deduped
+
+
+def _sanitize_plugin(plugin: dict) -> dict:
+    """Return new plugin dict with sanitized versions (pure, immutable)."""
+    sanitized = dict(plugin)
+    versions = plugin.get("versions", [])
+    if isinstance(versions, list):
+        sanitized["versions"] = _sanitize_versions(versions)
+    return sanitized
 
 
 def _fetch_manifest(source: str) -> list[dict]:
@@ -74,7 +177,7 @@ def _fetch_manifest(source: str) -> list[dict]:
 
 
 def merge_manifests(sources: list[str]) -> list[dict]:
-    """Merge manifests, deduplicating by guid (case-insensitive). Pure function."""
+    """Merge manifests, deduplicating by guid and sanitizing versions (pure)."""
     catalog: list[dict] = []
     seen: set[str] = set()
 
@@ -91,7 +194,7 @@ def merge_manifests(sources: list[str]) -> list[dict]:
                 print(f"  dedup: skipping duplicate guid {guid} ({plugin.get('name', '?')})")
                 continue
             seen.add(key)
-            catalog.append(plugin)
+            catalog.append(_sanitize_plugin(plugin))
 
     return catalog
 
