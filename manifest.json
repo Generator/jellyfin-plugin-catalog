@@ -27,6 +27,14 @@
     "owner": "Generator",
     "versions": [
       {
+        "changelog": "- Pin Jellyfin.Controller/Data to 12.0.0 (catalog 0.0.10.0 resolved floating 12.*-* to 12.1.0, unloadable on 12.0.0 servers with ReflectionTypeLoadException)\n\n- Bump version to 0.0.11 (net10.0, Jellyfin 12.0)",
+        "checksum": "4c85dd2093df3faf256c9bec66cffa51",
+        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-multify/releases/download/v0.0.11/Jellyfin.Plugin.Multify.zip",
+        "targetAbi": "12.0.0.0",
+        "timestamp": "2026-09-15T15:00:32Z",
+        "version": "0.0.11.0"
+      },
+      {
         "changelog": "- TelegramMessageStore cleanup/disposal race (drop, don't dispose, per-key locks; shutdown guards)\n- MultifyTestService library names (shared CorrectLibraryInfo helper)\n- Telegram MarkdownV2 escaping scoped to known URL keys\n- DeepCopyDict nested-list gap; GetMediaType default fallback\n- Plugin test-data/docs variable parity (PluginVersion, SourceUrl)\n\n- Debounced Telegram store writes (version-tracked trailing save)\n- LibraryCache virtual-folder TTL cache (30s); bounded _notifiedItems eviction (48h)\n- Generic webhook destinations: Music Playback Started, Library Correction Test, Plugin Events\n- FAQ Secrets & Credentials section\n\n- Bump version to 0.0.10 (net10.0, Jellyfin 12.0)",
         "checksum": "56f81d247b426e060240412b0d54b319",
         "sourceUrl": "https://github.com/Generator/jellyfin-plugin-multify/releases/download/v0.0.10/Jellyfin.Plugin.Multify.zip",
