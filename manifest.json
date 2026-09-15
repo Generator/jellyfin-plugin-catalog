@@ -27,6 +27,14 @@
     "owner": "Generator",
     "versions": [
       {
+        "changelog": "- TelegramMessageStore cleanup/disposal race (drop, don't dispose, per-key locks; shutdown guards)\n- MultifyTestService library names (shared CorrectLibraryInfo helper)\n- Telegram MarkdownV2 escaping scoped to known URL keys\n- DeepCopyDict nested-list gap; GetMediaType default fallback\n- Plugin test-data/docs variable parity (PluginVersion, SourceUrl)\n\n- Debounced Telegram store writes (version-tracked trailing save)\n- LibraryCache virtual-folder TTL cache (30s); bounded _notifiedItems eviction (48h)\n- Generic webhook destinations: Music Playback Started, Library Correction Test, Plugin Events\n- FAQ Secrets & Credentials section\n\n- Bump version to 0.0.10 (net10.0, Jellyfin 12.0)",
+        "checksum": "56f81d247b426e060240412b0d54b319",
+        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-multify/releases/download/v0.0.10/Jellyfin.Plugin.Multify.zip",
+        "targetAbi": "12.0.0.0",
+        "timestamp": "2026-09-15T14:34:37Z",
+        "version": "0.0.10.0"
+      },
+      {
         "changelog": "- Hot-reload plugin configuration without server restart: `MultifySender` now reads `MultifyPlugin.Instance.Configuration` per call (like `jellyfin-plugin-webhook` `WebhookSender`) instead of injected stale instance; `LibraryEventHostedService` (Singleton) now resolves `IWebhookSender`/`DashboardAlert` via `IServiceProvider.CreateScope()` per `ItemAdded`/`ItemDeleted` queue item, so `OnlySelected`/`AllExcept` changes apply instantly after UI Save (validated: `Thunderbolts*` private movie sent to Telegram id 3696 and Ntfy without restart after 15:48 save)\n- `{{LibraryName}}` now correctly shows CollectionFolder (`Private - Filmes` `04f64be\u2026`) instead of physical Folder (`movies` `a186\u2026`) via `CorrectLibraryInfo()` path-prefix against `ILibraryManager.GetVirtualFolders()` (validated on generic webhookd `catchal`l for `Jurassic World Rebirth` and `Thunderbolts*`)\n- `MdbList` quota burn: per-key `SemaphoreSlim` single-flight + 1h negative cache for 404 in `MdbListService` prevents thundering herd on 1Hz `PlaybackProgress` and re-query of invalid ids\n- `GetMediaType` exact lower switch with Contains fallback for custom subclass names\n- `DeepCopyDict` deep-copies nested `IDictionary`/`IList`, downgraded `DEBUG-ENRICH` to `LogDebug`\n- `TelegramMessageStore`: per-key `SemaphoreSlim` (`GetKeyLock`) makes `Get\u2192Edit/Send\u2192Store` atomic, preventing duplicate messages; `TelegramClient` holds per-key lock for edit path\n\n- Bump version to `0.0.9` / `0.0.9.0` (`build.yaml`, `Directory.Build.props`)\n\n- `REPORT.md` (catalog sanitizer report, no longer needed after 4-part version fix in `v0.0.8`)",
         "checksum": "f47e0c17a650beeef8103ad54d371385",
         "sourceUrl": "https://github.com/Generator/jellyfin-plugin-multify/releases/download/v0.0.9/Jellyfin.Plugin.Multify.zip",
