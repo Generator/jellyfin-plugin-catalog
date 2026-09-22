@@ -35,6 +35,7 @@ DEFAULT_SOURCES = [
     "https://generator.github.io/jellyfin-plugin-multify/manifest.json",
     "https://generator.github.io/jellyfin-plugin-extractsubs/manifest.json",
     "https://generator.github.io/jellyfin-plugin-wyzie/manifest.json",
+    "https://generator.github.io/JellySTRMprobe/manifest.json",
 ]
 
 
@@ -246,7 +247,7 @@ def main() -> int:
         if env_sources:
             sources = _parse_sources(env_sources)
         else:
-            print("info: SOURCE_MANIFESTS not set — using default 4 plugin URLs")
+            print("info: SOURCE_MANIFESTS not set — using default 5 plugin URLs")
             sources = DEFAULT_SOURCES
 
     if not sources:

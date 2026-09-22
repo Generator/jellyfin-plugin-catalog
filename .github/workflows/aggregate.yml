@@ -39,6 +39,7 @@ jobs:
             https://generator.github.io/jellyfin-plugin-multify/manifest.json
             https://generator.github.io/jellyfin-plugin-extractsubs/manifest.json
             https://generator.github.io/jellyfin-plugin-wyzie/manifest.json
+            https://generator.github.io/JellySTRMprobe/manifest.json
         run: python3 .github/scripts/aggregate.py
 
       - name: Commit aggregated manifest

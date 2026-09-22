@@ -12,10 +12,11 @@ Unified Jellyfin plugin repository — add **one URL** and get every plugin from
 
 | Plugin | Description | Source |
 |--------|-------------|--------|
-| **Trailer2Strm** | Creates `.strm` files pointing to official IMDb trailers | [`jellyfin-plugin-trailer2strm`](../jellyfin-plugin-trailer2strm) |
-| **Multify** | Unified notification plugin (Telegram, Gotify, ntfy, webhooks) | [`jellyfin-plugin-multify`](../jellyfin-plugin-multify) |
-| **Better Subtitle Extractor** | Extracts embedded subtitles via ffmpeg | [`jellyfin-plugin-extractsubs`](../jellyfin-plugin-extractsubs) |
-| **Wyzie Subtitles** | On-demand subtitle provider backed by `sub.wyzie.io` | [`jellyfin-plugin-wyzie`](../jellyfin-plugin-wyzie) |
+| **Trailer2Strm** | Creates `.strm` files pointing to official IMDb trailers | [`jellyfin-plugin-trailer2strm`](https://github.com/Generator/jellyfin-plugin-trailer2strm) |
+| **Multify** | Unified notification plugin (Telegram, Gotify, ntfy, webhooks) | [`jellyfin-plugin-multify`](https://github.com/Generator/jellyfin-plugin-multify) |
+| **Better Subtitle Extractor** | Extracts embedded subtitles via ffmpeg | [`jellyfin-plugin-extractsubs`](https://github.com/Generator/jellyfin-plugin-extractsubs) |
+| **Wyzie Subtitles** | On-demand subtitle provider backed by `sub.wyzie.io` | [`jellyfin-plugin-wyzie`](https://github.com/Generator/jellyfin-plugin-wyzie) |
+| **strmprobe** | Probes STRM files to extract media info | [`JellySTRMprobe`](https://github.com/Generator/JellySTRMprobe) |
 
 ## Installation
 
@@ -24,9 +25,9 @@ Unified Jellyfin plugin repository — add **one URL** and get every plugin from
    - **Repository Name**: `Generator Catalog`
    - **Repository URL**: `https://generator.github.io/jellyfin-plugin-catalog/manifest.json`
 3. Save, confirm the warning.
-4. Open the **Catalog** tab — all four plugins appear together. Click **Install** on any.
+4. Open the **Catalog** tab — all five plugins appear together. Click **Install** on any.
 
-Individual per-plugin URLs (`https://generator.github.io/jellyfin-plugin-<name>/manifest.json`) continue to work.
+Individual per-plugin manifest URLs continue to work.
 
 ## How It Works
 
