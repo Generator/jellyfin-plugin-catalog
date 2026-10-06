@@ -128,6 +128,14 @@
     "owner": "wyzie",
     "versions": [
       {
+        "changelog": "Release 1.0.6\n\nBCP-47 subtitle languages: normalize Wyzie's non-ISO codes (pb, zt, ea, sp, ze, zc, iw) to recognized tags (pt-BR, zh-Hant, es-419, ...) instead of unknown .pb.srt-style files.\n\nRequest-scoped variant filtering: regional subtitles are offered only when explicitly selected; generic searches return generic rows only. Fixes pt-BR/pt-PT searches returning empty results.\n\nStrip the free-plan ad cue by default (StripWyzieAdCue), renumbering SRT cues to keep files valid.",
+        "checksum": "247d3b55c626977c4c484fcd87cdb1a3",
+        "sourceUrl": "https://github.com/Generator/jellyfin-plugin-wyzie/releases/download/v1.0.6/Jellyfin.Plugin.Wyzie.zip",
+        "targetAbi": "12.0.0.0",
+        "timestamp": "2026-10-06T13:37:01Z",
+        "version": "1.0.6"
+      },
+      {
         "changelog": "Release 1.0.5\n\n- Migrate plugin catalog to gh-pages via jellyfin-plugin-repo-action\n- Build for Jellyfin 12.0 only (drop Emby and Jellyfin 10.11 targets)\n- Move packaging script to scripts/package.py and add test.yaml CI workflow\n- Adopt extractsubs workflow model (release/test/codeql) on main branch",
         "checksum": "d3265ca110aa071d99fb437abbe79efb",
         "sourceUrl": "https://github.com/Generator/jellyfin-plugin-wyzie/releases/download/v1.0.5/Jellyfin.Plugin.Wyzie.zip",
